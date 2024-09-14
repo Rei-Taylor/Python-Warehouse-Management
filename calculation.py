@@ -6,7 +6,7 @@ from database import connect_to_db,show_data, add_user, update_user
 
 path = r"C:\Users\User\Downloads\MSLI_TEST_CRIN (7).xlsx"
 a = "root"
-b = "TotsukaSaika217"
+b = ""
 c = "localhost"
 d = 3306
 e = "msl"
