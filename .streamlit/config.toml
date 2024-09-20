@@ -1,0 +1,12 @@
+[theme]
+primaryColor="#00f7b6"
+backgroundColor="#000000"
+secondaryBackgroundColor="#513c73"
+textColor="#f5dddd"
+
+
+[client]
+showErrorDetails = false
+
+
+

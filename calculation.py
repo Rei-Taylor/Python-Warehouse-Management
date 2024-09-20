@@ -13,6 +13,9 @@ e = "msl"
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
+Freezing_Types = ["Airblast-G","Airblast-BG","Airblast-W","Contact","Airblast-IQF","Double-Glazing"]
+
+
 @st.cache_resource
 def sql():
     return connect_to_db(a, b, c, d, e)
@@ -45,32 +48,59 @@ def form():
 
 def multiply(a, b):
     mu = pd.to_numeric(a) * pd.to_numeric(b)
-    return mu    
-
-@st.dialog("Enter New Entries")
-def input_form():
-    connect = sql()
-    input_1 = st.text_input("Sr_No")
-    input_2 = st.text_input("Fi_No")
-    input_3 = st.date_input("Date")
-    input_4 = st.text_input("Company")
-    input_5 = st.text_input("Item")
-    input_6 = st.text_input("Type")
-    input_7 = st.text_input("Size")
-    input_8 = st.text_input("Conversion")
-    input_9 = st.text_input("Total_Mc")
+    return mu
     
-    input_11 = st.text_input("Freezing_Type")
-
-    a = st.button("Save")
-    if a:
-        add_row(connect, input_1,input_2,input_3,input_4,input_5,input_6,input_7,input_8,input_9,multiply(input_8,input_9),input_11)
-        st.success("new row added")
-
 def crin():
     connect = sql()
     df = show_crin(connect)
     return df
+
+def unique_values():
+    df_crin = crin()
+    unique_company = df_crin["Company"].unique()
+
+    select_company = st.selectbox("Company",unique_company)
+
+    filtered_df = df_crin[df_crin["Company"] == select_company]
+
+    unique_item = filtered_df["Item"].unique()
+
+    select_item = st.selectbox("Item", unique_item)
+
+    filtered_df_2 = filtered_df[filtered_df["Item"] == select_item]
+
+    unique_type = filtered_df_2["Type"].unique()
+
+    select_type = st.selectbox("Type",unique_type)
+
+    unique_size = filtered_df_2["Size"].unique()
+
+    select_size = st.selectbox("Size",unique_size)
+
+    return select_company,select_item,select_size,select_type
+
+
+@st.dialog("Enter New Entries")
+def input_form():
+    connect = sql()
+
+
+    input_1 = st.text_input("Sr_No")
+    input_2 = st.text_input("Fi_No")
+    input_3 = st.date_input("Date")
+    select_company,select_item,select_size,select_type = unique_values()
+    input_8 = st.text_input("Conversion")
+    input_9 = st.text_input("Total_Mc")
+    
+    input_11 = st.selectbox("Freezing_Type",Freezing_Types)
+
+    a = st.button("Save")
+    if a:
+        add_row(connect, input_1,input_2,input_3,select_company,select_item,select_size,select_type,input_8,input_9,multiply(input_8,input_9),input_11)
+        st.success("new row added")
+
+
+
 # sqlconnection
 def data():
     connect = connect_to_db(a, b, c, d, e)
